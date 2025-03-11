@@ -13,6 +13,9 @@ import shutil
 
 app = FastAPI()
 
+# Routers to the project
+
+
 '''
     Configuración para que conecte con el frontend
     a través de la clase Middleware
