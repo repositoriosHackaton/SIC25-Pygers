@@ -1,3 +1,4 @@
+import base64
 from fastapi import APIRouter, UploadFile, File
 from api.services.ai import FaceRecognitionModel
 from fastapi import Form
@@ -25,8 +26,18 @@ async def reserves():
                             detail = "There is not images")
     return {"path_images" : os.listdir("api/images/")}
 
-@router.post("/reservation")  
-async def create_reserve(data: Annotated[FormUserInput, Form()], image : Annotated[UploadFile, File()]):
+@router.post("/reservation")
+async def create_reserve(
+    full_name: Annotated[str, Form()],
+    email: Annotated[str, Form()],
+    phone: Annotated[str, Form()],
+    arrival_time: Annotated[str, Form()],
+    departure_time: Annotated[str, Form()],
+    num_guests: Annotated[int, Form()],
+    room_type: Annotated[str, Form()],
+    pay_type: Annotated[str, Form()],
+    image: Annotated[UploadFile, File()]
+):
 
     # Save the information and foto at the database
     try: 
@@ -34,15 +45,15 @@ async def create_reserve(data: Annotated[FormUserInput, Form()], image : Annotat
 
         # Take the data at the form
         user_data = {
-            "fullname" : data.full_name,
-            "email" : data.email,
-            "phone" : data.phone,
+            "fullname" : full_name,
+            "email" : email,
+            "phone" : phone,
             "image" : image_bytes,
-            "arrival_time" : data.arrival_time,
-            "departure_time" : data.departure_time,
-            "num_guests" : data.num_guests,
-            "room_type" : data.room_type,
-            "pay_type" : data.pay_type
+            "arrival_time" : arrival_time,
+            "departure_time" : departure_time,
+            "num_guests" : num_guests,
+            "room_type" : room_type,
+            "pay_type" : pay_type
         }
         
         # Get embedding
@@ -52,7 +63,7 @@ async def create_reserve(data: Annotated[FormUserInput, Form()], image : Annotat
         # Create to the user
         database.create_user(user_data = user_data, embedding = embedding)
 
-        JSONResponse({"success_msg" : "user added successfully"}, 
+        return JSONResponse({"message" : "user added successfully"}, 
                 status_code = status.HTTP_200_OK)
     except Exception as e: 
         raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST,
@@ -77,17 +88,26 @@ async def confirm_reservation(image: UploadFile):
 
     # Capturar las caras y comparar las imagenes 
     try:
-        matches, matched_boxes = face_model.compare_face_with_known_faces(image_pil)
-        response_data = []
-        for i, (path, distance) in enumerate(matches):
-            response_data.append({
-                "known_face_path": path,
-                "distance": distance,
-                "box": matched_boxes[i].tolist()
-            })
-        if not response_data:
-            return {"message": "No se encontraron coincidencias", "information" : response_data}
-        return {"message": "Se encontraron coincidencias", "results": response_data}
+        result = face_model.search_guests(image_pil, database)
+        
+        if result is not None:
+            print("Estoy aca")
+            encoded_image = base64.b64encode(image_bytes).decode("utf-8")
+            response = {
+                "full_name" : result["fullname"],
+                "email" : result["email"],
+                "phone" : result["phone"],
+                "arrival_time" : result["arrival_time"],
+                "departure_time" : result["departure_time"],
+                "num_guests" : result["num_guests"],
+                "room_type" : result["room_type"],
+                "pay_type" : result["pay_type"],
+                "image" : encoded_image,
+            }
+            return JSONResponse({"data": response}, status_code = status.HTTP_200_OK)
+        else:
+            print("Estoy aca 2")
+            return JSONResponse({"data": ""}, status_code = status.HTTP_404_NOT_FOUND)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

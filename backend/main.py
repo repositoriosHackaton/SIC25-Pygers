@@ -18,12 +18,6 @@ from fastapi.security import OAuth2PasswordBearer
 
 app = FastAPI()
 
-# Routers to the project
-app.include_router(recepcionist.router)
-
-# Model AI
-face_model = FaceRecognitionModel()
-
 # Connect with the frontend
 origins = ["http://localhost:5173"]
 
@@ -34,6 +28,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Routers to the project
+app.include_router(recepcionist.router)
+
+
+
 
 @app.get("/home")
 async def home():

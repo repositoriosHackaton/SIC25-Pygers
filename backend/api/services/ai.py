@@ -1,12 +1,9 @@
 
 import torch
 from PIL import Image
-from typing import Dict, List, Tuple
-import numpy as np
-from io import BytesIO
+from typing import Dict
 from facenet_pytorch import MTCNN, InceptionResnetV1
 from scipy.spatial.distance import euclidean
-import cv2
 
 class FaceRecognitionModel:
     def __init__(self):
@@ -40,20 +37,22 @@ class FaceRecognitionModel:
         return None
 
 
-    def search_guests(self, image):
-        guests_embeddings = [{"id":1, "embedding": [123]}] # Embeddings from database
+    def search_guests(self, image, bd):
+        guests_embeddings = bd.get_embeddings() # Embeddings from database
+        if guests_embeddings is None:
+            return None
+        
         processed_img = self.pre_process_image(image)
         embedding_img = self.get_embeddings(processed_img)
                 
         if embedding_img is not None:
             for guest in guests_embeddings:
                 distance = euclidean(embedding_img.view(-1), guest["embedding"].view(-1))
-                print(distance)
+                print(f"{distance} - {guest["id"]}")
                 if distance <= self.umbral:
-                    print(guest) 
-                    return guest
+                    return bd.get_user_by_id(guest["id"])
 
-
+        return None
 
     def pre_process_image(self, image: Image.Image) -> Image.Image:
         sizes = (400, 400)
