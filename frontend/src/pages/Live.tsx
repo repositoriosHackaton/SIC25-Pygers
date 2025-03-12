@@ -28,7 +28,7 @@ export default function WebcamComponent() {
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isCameraActive && isSearching) {
-      interval = setInterval(captureFrame, 1000); // Cambia el intervalo según tus necesidades (en milisegundos)
+      interval = setInterval(captureFrame, 1000)
     }
     return () => clearInterval(interval);
   }, [isCameraActive, isSearching]);
