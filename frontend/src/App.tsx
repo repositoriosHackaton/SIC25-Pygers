@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import FormularioPrincipal from './pages/Formulario';
-import PaginaDecisiones from './pages/Opciones'
+import PaginaDecisiones from './pages/opciones'
 import Live from './pages/Live'
 
 export default function App() {
