@@ -1,19 +1,16 @@
-import Home from './pages/home'
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
-import CompGrabacion from './pages/Grabacion';
-import Decision from './components/Decision';
-import WebcamComponent from './components/ActivarCamara'
-
+import FormularioPrincipal from './pages/Formulario';
+import PaginaDecisiones from './pages/Opciones'
+import Live from './pages/Live'
 
 export default function App() {
   
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Home/>}></Route>
-        <Route path="/Grabacion" element={<CompGrabacion />} />
-        <Route path="/Opciones" element={<Decision />} />
-        <Route path="/Live" element={<WebcamComponent />} />
+        <Route path='/' element={<PaginaDecisiones/>}></Route>
+        <Route path="/Formulario" element={<FormularioPrincipal />} />
+        <Route path="/Live" element={<Live />} />
       </Routes>
     </BrowserRouter>
   )
