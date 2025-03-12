@@ -2,12 +2,21 @@ import { useRef, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import Navbar from "../components/Navbar";
 
-
 export default function WebcamComponent() {
   const webcamRef = useRef<Webcam>(null);
   interface ComparisonResult {
     message: string;
-    results?: { known_face_path: string; distance: number }[];
+    data?: {
+      full_name: string;
+      email: string;
+      phone: string;
+      arrival_time: string;
+      departure_time: string;
+      num_guests: string;
+      room_type: string;
+      pay_type: string;
+      image: string;
+    };
   }
 
   const [comparisonResult, setComparisonResult] = useState<ComparisonResult | null>(null);
@@ -15,6 +24,7 @@ export default function WebcamComponent() {
   const [isSearching, setIsSearching] = useState(true);
 
   useEffect(() => {
+    console.log("isCameraActive", isCameraActive);
     let interval: NodeJS.Timeout;
     if (isCameraActive && isSearching) {
       interval = setInterval(captureFrame, 1000); // Cambia el intervalo según tus necesidades (en milisegundos)
@@ -30,16 +40,17 @@ export default function WebcamComponent() {
         const file = new File([blob], "frame.jpg", { type: "image/jpeg" });
 
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("image", file);
 
         try {
-          const response = await fetch('http://localhost:8000/compare-faces', {
+          const response = await fetch('http://localhost:8000/hotel/detect', {
             method: 'POST',
             body: formData,
           });
           const result = await response.json();
-          setComparisonResult(result);
-          if (result?.results) {
+          console.log(result)
+          setComparisonResult(result.data ? { message: "User found", data: result.data } : { message: "User not found" });
+          if (result.data) {
             handlePause(); // Pausar la cámara al encontrar una coincidencia
             setIsSearching(false); // Detener las consultas al backend
           }
@@ -149,18 +160,25 @@ export default function WebcamComponent() {
             <p className="text-white font-bold text-center text-2xl w-[60%]">
               {comparisonResult ? comparisonResult.message : "Esperando resultados de comparación..."}
             </p>
-            {comparisonResult && comparisonResult.results && comparisonResult.results.length > 0 && (
+            {comparisonResult && comparisonResult.data && (
               <div className="flex flex-col items-center">
                 <img
-                  src={`http://localhost:8000/faces/${comparisonResult.results[0].known_face_path.split('\\').pop()}`}
-                  alt="Known face"
+                  src={`data:image/jpeg;base64,${comparisonResult.data.image}`}
+                  alt="Guest"
                   className="mt-4 border-4 border-sky-700 bg-sky-700 rounded shadow-lg shadow-sky-700/50"
                   width={200}
                   height={200}
                 />
-                <p className="text-white mt-2 text-center">
-                  Porcentaje de aproximación: {((1 - comparisonResult.results[0].distance) * 100).toFixed(2)}%
-                </p>
+                <div className="text-white mt-4">
+                  <p>Nombre Completo: {comparisonResult.data.full_name}</p>
+                  <p>Email: {comparisonResult.data.email}</p>
+                  <p>Teléfono: {comparisonResult.data.phone}</p>
+                  <p>Fecha de Llegada: {comparisonResult.data.arrival_time}</p>
+                  <p>Fecha de Salida: {comparisonResult.data.departure_time}</p>
+                  <p>Número de Huéspedes: {comparisonResult.data.num_guests}</p>
+                  <p>Tipo de Habitación: {comparisonResult.data.room_type}</p>
+                  <p>Método de Pago: {comparisonResult.data.pay_type}</p>
+                </div>
               </div>
             )}
           </div>
@@ -168,4 +186,6 @@ export default function WebcamComponent() {
       </div>
     </>
   );
+
+  
 }
