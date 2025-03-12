@@ -58,6 +58,7 @@ async def create_reserve(
         
         # Get embedding
         img = Image.open(BytesIO(image_bytes))
+        img = img.convert("RGB")
         embedding = face_model.get_embeddings(img)
 
         # Create to the user
@@ -91,7 +92,6 @@ async def confirm_reservation(image: UploadFile):
         result = face_model.search_guests(image_pil, database)
         
         if result is not None:
-            print("Estoy aca")
             encoded_image = base64.b64encode(image_bytes).decode("utf-8")
             response = {
                 "full_name" : result["fullname"],
@@ -106,8 +106,7 @@ async def confirm_reservation(image: UploadFile):
             }
             return JSONResponse({"data": response}, status_code = status.HTTP_200_OK)
         else:
-            print("Estoy aca 2")
-            return JSONResponse({"data": ""}, status_code = status.HTTP_404_NOT_FOUND)
+            return JSONResponse({"data": "access denied"}, status_code = status.HTTP_404_NOT_FOUND)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
