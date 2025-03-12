@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
-import { Link } from 'react-router-dom';
+import Navbar from "../components/Navbar";
+
 
 export default function WebcamComponent() {
   const webcamRef = useRef<Webcam>(null);
@@ -95,14 +96,12 @@ export default function WebcamComponent() {
 
   return (
     <>
-      <div className='min-h-screen bg-gray-800'>
-          <Link to='/'>
-            <button className="w-48 text-black bg-gray-500 rounded shadow-lg shadow-gray-500/50 hover:bg-neutral-800 hover:text-white hover:shadow-lg hover:shadow-neutral-800/50 font-bold py-2 px-4 rounded text-center cursor-pointer transition duration-200 active:scale-90">Atras</button>
-          </Link>
+      <Navbar/>
+      <div className='bg-sky-300'>
         <h1 className="p-9 text-white text-4xl font-semibold mb-6 text-center">
           Visualización de la Cámara
         </h1>
-        <div className="flex flex-row justify-center space-x-8">
+        <div className="flex p-9 flex-row justify-center space-x-8">
           <div className="flex flex-col items-center">
             <Webcam
               audio={false}
@@ -115,31 +114,31 @@ export default function WebcamComponent() {
                 height: 720,
                 facingMode: 'user',
               }}
-              className="border-4 border-gray-500 rounded shadow-lg shadow-gray-500/50"
+              className="border-4 border-sky-700 bg-sky-700 rounded shadow-lg shadow-sky-700/50"
               onUserMedia={() => console.log('User media loaded')}
             />
             <div className="mt-4 flex justify-center space-x-4 m-5">
               <button
                 onClick={handleStart}
-                className="w-48 text-white bg-lime-950 rounded shadow-lg shadow-lime-950/50 hover:bg-white hover:text-black hover:shadow-lg hover:shadow-neutral-50/50 font-bold py-2 px-4 rounded text-center cursor-pointer transition duration-200 active:scale-90"
+                className="py-2 px-4 w-48 text-white bg-lime-700 rounded shadow-lg shadow-lime-700/50 hover:bg-lime-800 hover:shadow-lg hover:shadow-lime-800/50  transition duration-300 active:scale-90"
               >
                 Iniciar
               </button>
               <button
                 onClick={handleStop}
-                className="w-48 text-white bg-red-950 rounded shadow-lg shadow-red-950/50 hover:bg-white  hover:text-black hover:shadow-lg hover:shadow-neutral-50/50 font-bold py-2 px-4 rounded text-center cursor-pointer transition duration-200 active:scale-90"
+                className="py-2 px-4 w-48 text-white bg-red-700 rounded shadow-lg shadow-red-700/50 hover:bg-red-800 hover:shadow-lg hover:shadow-red-800/50  transition duration-300 active:scale-90"
               >
                 Detener
               </button>
               <button
                 onClick={handlePause}
-                className="w-48 text-white bg-amber-950 rounded shadow-lg shadow-amber-950/50 hover:bg-white hover:text-black hover:shadow-lg hover:shadow-neutral-50/50 font-bold py-2 px-4 rounded text-center cursor-pointer transition duration-200 active:scale-90"
+                className="py-2 px-4 w-48 text-white  bg-sky-700 rounded shadow-lg shadow-sky-700/50 hover:bg-sky-800 hover:shadow-lg hover:shadow-sky-800/50  transition duration-300 active:scale-90"
               >
                 Pausar
               </button>
               <button
                 onClick={handleResume}
-                className="w-48 text-white bg-amber-950 rounded shadow-lg shadow-amber-950/50  hover:bg-white hover:text-black hover:shadow-lg hover:shadow-neutral-50/50 font-bold py-2 px-4 rounded text-center cursor-pointer transition duration-200 active:scale-90"
+                className="py-2 px-4 w-48 text-white  bg-sky-700 rounded shadow-lg shadow-sky-700/50 hover:bg-sky-800 hover:shadow-lg hover:shadow-sky-800/50  transition duration-300 duration-200 active:scale-90"
               >
                 Reanudar
               </button>
@@ -155,7 +154,7 @@ export default function WebcamComponent() {
                 <img
                   src={`http://localhost:8000/faces/${comparisonResult.results[0].known_face_path.split('\\').pop()}`}
                   alt="Known face"
-                  className="mt-4 border-4 border-amber-950 rounded shadow-lg shadow-amber-950/50"
+                  className="mt-4 border-4 border-sky-700 bg-sky-700 rounded shadow-lg shadow-sky-700/50"
                   width={200}
                   height={200}
                 />
