@@ -106,8 +106,7 @@ async def confirm_reservation(image: UploadFile):
             }
             return JSONResponse({"data": response}, status_code = status.HTTP_200_OK)
         else:
-            return JSONResponse({"data": "access denied"}, status_code = status.HTTP_404_NOT_FOUND)
+            return JSONResponse({"data": None}, status_code = status.HTTP_404_NOT_FOUND)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
