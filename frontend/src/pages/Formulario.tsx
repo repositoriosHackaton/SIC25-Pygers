@@ -72,8 +72,10 @@ export default function FormularioPrincipal() {
     <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-amber-50">
       {
         loading &&
-        <div className="w-full h-full bg-black fixed top-0 bottom-0 left-0 right-0 z-[100] opacity-30 flex items-center justify-center">
-          <h1 className="text-white">Registrando...</h1>
+        <div className="w-full h-full bg-[#00000070] fixed top-0 bottom-0 left-0 right-0 z-[100] flex items-center justify-center">
+          <h1 className="text-white text-4xl">
+            Registrando...
+          </h1>
         </div>
       }
       <div className="fixed top-0 w-full z-10 p-4">
@@ -94,10 +96,11 @@ export default function FormularioPrincipal() {
                 Nombre Completo
               </label>
               <input
+                required
                 id="full_name"
                 type="text"
                 name="full_name"
-                className="w-full px-5 py-2 border rounded border-black"
+                className="w-full px-5 py-2 border rounded border-black outline-0"
                 onChange={handleChange}
               />
             </div>
@@ -107,10 +110,11 @@ export default function FormularioPrincipal() {
                 Correo Electronico
               </label>
               <input
+                required
                 id="email"
                 type="email"
                 name="email"
-                className="w-full px-5 py-2 border rounded border-black"
+                className="w-full px-5 py-2 border rounded border-black outline-0"
                 onChange={handleChange}
               />
             </div>
@@ -120,10 +124,11 @@ export default function FormularioPrincipal() {
                 Número de Teléfono
               </label>
               <input
+                required
                 id="phone"
                 type="number"
                 name="phone"
-                className="w-full px-5 py-2 border rounded border-black"
+                className="w-full px-5 py-2 border rounded border-black outline-0"
                 onChange={handleChange}
               />
             </div>
@@ -133,10 +138,11 @@ export default function FormularioPrincipal() {
                 Fecha de Llegada
               </label>
               <input
+                required
                 id="arrival_time"
                 type="date"
                 name="arrival_time"
-                className="w-full px-5 py-2 border rounded border-black"
+                className="w-full px-5 py-2 border rounded border-black outline-0"
                 onChange={handleChange}
               />
             </div>
@@ -146,10 +152,11 @@ export default function FormularioPrincipal() {
                 Fecha de Salida
               </label>
               <input
+                required
                 id="departure_time"
                 type="date"
                 name="departure_time"
-                className="w-full px-5 py-2 border rounded border-black"
+                className="w-full px-5 py-2 border rounded border-black outline-0"
                 onChange={handleChange}
               />
             </div>
@@ -159,10 +166,11 @@ export default function FormularioPrincipal() {
                 Número de Huéspedes
               </label>
               <input
+                required
                 id="num_guests"
                 type="number"
                 name="num_guests"
-                className="w-full px-5 py-2 border rounded border-black"
+                className="w-full px-5 py-2 border rounded border-black outline-0"
                 onChange={handleChange}
               />
             </div>
@@ -172,9 +180,10 @@ export default function FormularioPrincipal() {
                 Tipo de Habitación:
               </label>
               <select
+                required
                 id="room_type"
                 name="room_type"
-                className="w-full px-5 py-2 border rounded border-black bg-white-200"
+                className="w-full px-5 py-2 border rounded border-black outline-0 bg-white-200"
                 onChange={handleChange}
               >
                 <option value="individual">Individual</option>
@@ -190,9 +199,10 @@ export default function FormularioPrincipal() {
                 Método de Pago
               </label>
               <select
+                required
                 id="pay_type"
                 name="pay_type"
-                className="w-full px-5 py-2 border rounded border-black bg-white-200"
+                className="w-full px-5 py-2 border rounded border-black outline-0 bg-white-200"
                 onChange={handleChange}
               >
                 <option value="visa">Visa</option>
@@ -209,6 +219,7 @@ export default function FormularioPrincipal() {
               SUBIR FOTO
             </label>
             <input
+              required
               id="image"
               type="file"
               hidden
