@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import Navbar from "../components/Navbar";
+import { API_RESPONSES } from '../constants/ApiResponses';
 
 export default function WebcamComponent() {
   const webcamRef = useRef<Webcam>(null);
@@ -107,10 +108,10 @@ export default function WebcamComponent() {
 
   return (
     <>
-      <Navbar/>
-      <div className='bg-sky-300'>
-        <h1 className="p-9 text-white text-4xl font-semibold mb-6 text-center">
-          Visualización de la Cámara
+      <Navbar />
+      <div className='bg-amber-50'>
+        <h1 className="p-9 text-[#F9BC60] text-4xl font-semibold text-center">
+          Búsqueda de huésped
         </h1>
         <div className="flex p-9 flex-row justify-center space-x-8">
           <div className="flex flex-col items-center">
@@ -125,31 +126,30 @@ export default function WebcamComponent() {
                 height: 720,
                 facingMode: 'user',
               }}
-              className="border-4 border-sky-700 bg-sky-700 rounded shadow-lg shadow-sky-700/50"
-              onUserMedia={() => console.log('User media loaded')}
+              className=" bg-[#F9BC60] rounded shadow-lg shadow-sky-700/50"
             />
             <div className="mt-4 flex justify-center space-x-4 m-5">
               <button
                 onClick={handleStart}
-                className="py-2 px-4 w-48 text-white bg-lime-700 rounded shadow-lg shadow-lime-700/50 hover:bg-lime-800 hover:shadow-lg hover:shadow-lime-800/50  transition duration-300 active:scale-90"
+                className="py-2 px-4 w-48 text-white bg-amber-700 rounded shadow-md shadow-lime-600 hover:bg-lime-600 transition duration-300 active:scale-90 cursor-pointer"
               >
                 Iniciar
               </button>
               <button
                 onClick={handleStop}
-                className="py-2 px-4 w-48 text-white bg-red-700 rounded shadow-lg shadow-red-700/50 hover:bg-red-800 hover:shadow-lg hover:shadow-red-800/50  transition duration-300 active:scale-90"
+                className="py-2 px-4 w-48 text-white bg-amber-700 rounded shadow-md shadow-red-700 hover:bg-red-700 transition duration-300 active:scale-90 cursor-pointer"
               >
                 Detener
               </button>
               <button
                 onClick={handlePause}
-                className="py-2 px-4 w-48 text-white  bg-sky-700 rounded shadow-lg shadow-sky-700/50 hover:bg-sky-800 hover:shadow-lg hover:shadow-sky-800/50  transition duration-300 active:scale-90"
+                className="py-2 px-4 w-48 text-white  bg-amber-700 rounded shadow-md shadow-sky-600 hover:bg-sky-600 transition duration-300 active:scale-90 cursor-pointer"
               >
                 Pausar
               </button>
               <button
                 onClick={handleResume}
-                className="py-2 px-4 w-48 text-white  bg-sky-700 rounded shadow-lg shadow-sky-700/50 hover:bg-sky-800 hover:shadow-lg hover:shadow-sky-800/50  transition duration-300 duration-200 active:scale-90"
+                className="py-2 px-4 w-48 text-white  bg-amber-700 rounded shadow-md shadow-sky-600 hover:bg-sky-600 transition duration-300 active:scale-90 cursor-pointer"
               >
                 Reanudar
               </button>
@@ -157,19 +157,19 @@ export default function WebcamComponent() {
           </div>
           {/* Mostrar resultados de comparación */}
           <div className="flex flex-col items-center">
-            <p className="text-white font-bold text-center text-2xl w-[60%]">
-              {comparisonResult ? comparisonResult.message : "Esperando resultados de comparación..."}
+            <p className="text-[#F9BC60] font-bold text-center text-2xl w-[60%]">
+              {comparisonResult ? API_RESPONSES[comparisonResult.message] : "Esperando resultados de comparación..."}
             </p>
             {comparisonResult && comparisonResult.data && (
               <div className="flex flex-col items-center">
                 <img
                   src={`data:image/jpeg;base64,${comparisonResult.data.image}`}
                   alt="Guest"
-                  className="mt-4 border-4 border-sky-700 bg-sky-700 rounded shadow-lg shadow-sky-700/50"
+                  className="mt-4 border-4 border-[#F9BC60] bg-[#F9BC60] rounded shadow-lg shadow-amber-400"
                   width={200}
                   height={200}
                 />
-                <div className="text-white mt-4">
+                <div className="text-[#F9BC60] mt-4">
                   <p>Nombre Completo: {comparisonResult.data.full_name}</p>
                   <p>Email: {comparisonResult.data.email}</p>
                   <p>Teléfono: {comparisonResult.data.phone}</p>

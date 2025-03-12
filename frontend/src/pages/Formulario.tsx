@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useState } from "react"
 
 export default function FormularioPrincipal() {
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -10,10 +12,12 @@ export default function FormularioPrincipal() {
     arrival_time: "",
     departure_time: "",
     num_guests: "",
-    room_type: "",
-    pay_type: "",
+    room_type: "Individual",
+    pay_type: "Visa",
     image: null,
   })
+
+  const [loading, setLoading] = useState(false)
 
   interface FormData {
     full_name: string;
@@ -43,38 +47,51 @@ export default function FormularioPrincipal() {
     }
 
     try {
+      setLoading(true)
       const response: Response = await fetch("http://127.0.0.1:8000/hotel/reservation", {
         method: "POST",
         body: data,
       })
       if (response.ok) {
+        setLoading(false)
         alert("Reserva creada con éxito")
+        navigate("/")
       } else {
+        setLoading(false)
         const errorData = await response.json();
-      alert(`Error al crear la reserva: ${errorData.detail}`);
+      alert(`Error al crear la reserva: ${errorData.detail}`)
       }
     } catch (error) {
+      setLoading(false)
       console.error("Error:", error)
       alert("Error al crear la reserva")
     }
   }
 
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-sky-300">
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-amber-50">
+      {
+        loading &&
+        <div className="w-full h-full bg-black fixed top-0 bottom-0 left-0 right-0 z-[100] opacity-30 flex items-center justify-center">
+          <h1 className="text-white">Registrando...</h1>
+        </div>
+      }
       <div className="fixed top-0 w-full z-10 p-4">
         <Navbar />
       </div>
 
       <div className="flex justify-center items-center pt-40 pb-10 px-6">
         <form
-          className="w-full max-w-xl p-9 bg-white text-black rounded shadow-md text-shadow-lg shadow-white"
+          className="w-full max-w-xl mt-20 p-9 bg-amber-100 text-black rounded shadow-md text-shadow-lg shadow-white"
           onSubmit={handleSubmit}
         >
-          <h2 className="text-4xl font-semibold mb-6 text-center">Formulario de Reserva</h2>
+          <h2 className="text-4xl font-semibold mb-6 text-center text-[#F9BC60]">
+            Ingrese sus datos
+          </h2>
           <div id="contenido" className="justify-center items-center columns-2 py-5">
             <div className="mb-3">
               <label htmlFor="full_name" className="block text-black">
-                Nombre Completo (Nombres, Apellidos)
+                Nombre Completo
               </label>
               <input
                 id="full_name"
@@ -188,14 +205,14 @@ export default function FormularioPrincipal() {
           </div>
 
           <div className="mb-3 py-2">
-            <label htmlFor="image" className="block text-black">
-              Subir Fotos Del Huésped o Huéspedes
+            <label htmlFor="image" className="p-3 m-auto block rounded-2xl text-white bg-[#F9BC60] cursor-pointer text-center font-bold hover:bg-amber-200 transition">
+              SUBIR FOTO
             </label>
             <input
               id="image"
               type="file"
+              hidden
               name="image"
-              className="w-full px-2 py-2 border rounded border-black bg-sky-700"
               multiple
               onChange={handleChange}
             />
@@ -203,13 +220,13 @@ export default function FormularioPrincipal() {
 
           <div className="flex justify-between">
             <Link to="/">
-              <button className="px-3 py-2 text-base text-white bg-sky-700 rounded shadow-lg shadow-sky-700/50 hover:bg-sky-800 hover:shadow-lg hover:shadow-sky-800/50 transition duration-300">
+              <button className="cursor-pointer px-3 py-2 text-base text-white bg-[#F9BC60] rounded shadow-lg shadow-amber-300/50 hover:bg-amber-200 transition duration-300">
                 Volver
               </button>
             </Link>
             <button
               type="submit"
-              className="px-3 py-2 text-base text-white bg-sky-700 rounded shadow-lg shadow-sky-700/50 hover:bg-sky-800 hover:shadow-lg hover:shadow-sky-800/50 transition duration-300"
+              className="cursor-pointer px-3 py-2 text-base text-white bg-[#F9BC60] rounded shadow-lg shadow-amber-300/50 hover:bg-amber-200 transition duration-300"
             >
               Enviar
             </button>

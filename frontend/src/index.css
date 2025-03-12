@@ -9,8 +9,7 @@
 }
 
 :root {
-  background-color: var(--color-primary-dark);
-
+  background-color: #fffbeb;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
