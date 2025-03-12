@@ -48,7 +48,6 @@ class FaceRecognitionModel:
         if embedding_img is not None:
             for guest in guests_embeddings:
                 distance = euclidean(embedding_img.view(-1), guest["embedding"].view(-1))
-                print(f"{distance} - {guest["id"]}")
                 if distance <= self.umbral:
                     return bd.get_user_by_id(guest["id"])
 
@@ -68,14 +67,4 @@ class FaceRecognitionModel:
             img = img.rotate(90, expand=True)
         
         return img.resize(sizes, Image.LANCZOS)
-
-
-
-def main():
-    model = FaceRecognitionModel()
-    img = Image.open("images.jpg")
-    print(model.get_embeddings(img))
-
-if __name__ == "__main__": 
-    main()
 

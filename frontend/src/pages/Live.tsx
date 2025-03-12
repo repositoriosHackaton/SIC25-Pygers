@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import Navbar from "../components/Navbar";
+
 import { API_RESPONSES } from '../constants/ApiResponses';
 
 export default function WebcamComponent() {
@@ -25,7 +26,6 @@ export default function WebcamComponent() {
   const [isSearching, setIsSearching] = useState(true);
 
   useEffect(() => {
-    console.log("isCameraActive", isCameraActive);
     let interval: NodeJS.Timeout;
     if (isCameraActive && isSearching) {
       interval = setInterval(captureFrame, 1000); // Cambia el intervalo según tus necesidades (en milisegundos)
@@ -41,6 +41,7 @@ export default function WebcamComponent() {
         const file = new File([blob], "frame.jpg", { type: "image/jpeg" });
 
         const formData = new FormData();
+
         formData.append("image", file);
 
         try {
@@ -137,6 +138,7 @@ export default function WebcamComponent() {
               </button>
               <button
                 onClick={handleStop}
+
                 className="py-2 px-4 w-48 text-white bg-amber-700 rounded shadow-md shadow-red-700 hover:bg-red-700 transition duration-300 active:scale-90 cursor-pointer"
               >
                 Detener
@@ -186,6 +188,4 @@ export default function WebcamComponent() {
       </div>
     </>
   );
-
-  
 }
