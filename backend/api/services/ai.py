@@ -1,12 +1,9 @@
 
 import torch
 from PIL import Image
-from typing import Dict, List, Tuple
-import numpy as np
-from io import BytesIO
+from typing import Dict
 from facenet_pytorch import MTCNN, InceptionResnetV1
 from scipy.spatial.distance import euclidean
-import cv2
 
 class FaceRecognitionModel:
     def __init__(self):
@@ -15,80 +12,46 @@ class FaceRecognitionModel:
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         
         self.mtcnn = MTCNN(
-            select_largest=False,
-            keep_all=True,
-            min_face_size=10,
+            select_largest=True,
+            keep_all=False,
+            min_face_size=20,
             thresholds=[0.6, 0.7, 0.7],
             post_process=False,
             image_size=160,
             device=self.device
         ).eval()
-        
+                
         self.encoder = InceptionResnetV1(
             pretrained='vggface2',
             classify=False,
             device=self.device
         ).eval()
 
-    def get_embeddings(self, faces: torch.Tensor) -> torch.Tensor:
-        embeddings = self.encoder(faces).detach().cpu()
-        embeddings = embeddings / embeddings.norm(p=2, dim=1, keepdim=True)
-        return embeddings
+    def get_embeddings(self, image: Image.Image):
+        face = self.mtcnn.forward(image)
 
-    def compare_face_with_known_faces(self, image: Image.Image) -> Tuple[List[Tuple[str, float]], List[np.ndarray]]:
-        matches = []
-        matched_boxes = []
-        
-        if not self.known_face_embeddings:
-            return matches, matched_boxes
+        if face is not None:
+            embedding = self.encoder(face.unsqueeze(0)).detach().cpu()
+            embedding = embedding / embedding.norm(p=2, dim=1, keepdim=True)
+            return embedding
+        return None
+
+
+    def search_guests(self, image, bd):
+        guests_embeddings = bd.get_embeddings() # Embeddings from database
+        if guests_embeddings is None:
+            return None
         
         processed_img = self.pre_process_image(image)
-        
-        boxes, probs, _ = self.mtcnn.detect(processed_img, landmarks=True)
-        if boxes is None:
-            return matches, matched_boxes
-        
-        faces = self.mtcnn.extract(processed_img, boxes, save_path=None)
-        if faces is None:
-            return matches, matched_boxes
-
-        for i, face in enumerate(faces):
-            print(i)
-            face_embedding = self.get_embeddings(face.unsqueeze(0))
-            for path, known_embedding in self.known_face_embeddings.items():
-                distance = euclidean(face_embedding.view(-1), known_embedding.view(-1))
-                print(f"{path} - {distance}")
-
+        embedding_img = self.get_embeddings(processed_img)
+                
+        if embedding_img is not None:
+            for guest in guests_embeddings:
+                distance = euclidean(embedding_img.view(-1), guest["embedding"].view(-1))
                 if distance <= self.umbral:
-                    matches.append((path, distance))
-                    matched_boxes.append(boxes[i])
-        return self.post_process_image(matches, matched_boxes)
-    
+                    return bd.get_user_by_id(guest["id"])
 
-    def add_known_face(self, faces_path: List[str]) -> None:
-        self.known_face_embeddings = {}
-
-        for path in faces_path:
-            img = Image.open(path)
-            processed_img = self.pre_process_image(img)
-            faces = self.mtcnn(processed_img)
-            if faces is not None and len(faces) > 0:
-                face = faces[0].unsqueeze(0)
-                embedding = self.get_embeddings(face)
-                self.known_face_embeddings[path] = embedding
-
-    def scale_boxes(self, boxes: np.ndarray, original_size: Tuple[int, int], processed_size: Tuple[int, int]) -> np.ndarray:
-        scale_x = original_size[0] / processed_size[0]
-        scale_y = original_size[1] / processed_size[1]
-        return boxes * np.array([scale_x, scale_y, scale_x, scale_y])
-
-    def post_process_image(self, matches, matched_boxes):
-        for i in range(len(matches)):
-            img_path = matches[i][0]
-            img_original_size = Image.open(img_path).size
-            matched_boxes[i] = self.scale_boxes(matched_boxes[i], img_original_size, (400, 400))
-
-        return matches, matched_boxes
+        return None
 
     def pre_process_image(self, image: Image.Image) -> Image.Image:
         sizes = (400, 400)
@@ -105,32 +68,3 @@ class FaceRecognitionModel:
         
         return img.resize(sizes, Image.LANCZOS)
 
-    def process_video(self, video_path: str):
-
-        cap = cv2.VideoCapture(video_path)
-        if not cap.isOpened():
-            return {"error": "No se pudo abrir el video."}
-        
-        fps = cap.get(cv2.CAP_PROP_FPS)
-        interval = int(fps * 3)  # 1 frame cada 3 segundos
-        frame_count = 0
-        results = []
-
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
-            
-            if frame_count % interval == 0:
-                # Convertir frame (NumPy) a PIL
-                frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                pil_image = Image.fromarray(frame_rgb)
-                
-                
-                result = self.compare_face_with_known_faces(pil_image)
-                results.append({"frame": frame_count, "result": result})
-            
-            frame_count += 1
-        
-        cap.release()
-        return results
