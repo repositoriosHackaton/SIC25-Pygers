@@ -35,6 +35,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-UPLOAD_FOLDER = 'api/images'
-os.makedirs(UPLOAD_FOLDER, exist_ok = True)
-
+@app.get("/home")
+async def home():
+    return {"message" : "Welcome to the Pyger's hotel"}

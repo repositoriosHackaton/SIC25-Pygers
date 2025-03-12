@@ -4,9 +4,7 @@ from fastapi import HTTPException, status
 
 # Class of the database
 class BD:
-    def __init__(self, user_data, embedding: float):
-        self.user_data = user_data
-        self.embedding = embedding
+    def __init__(self):
         self.bd = []
     
     def get_db(self):
@@ -23,23 +21,27 @@ class BD:
     def get_user_by_id(self, id_user):
         for user in self.bd:
             if user["id"] == id_user:
-                return user
+                return user["user_data"]
         
         raise HTTPException(
             status_code = status.HTTP_400_BAD_REQUEST,
             detail = "The user doesn't exist in the database")
     
     # Save users in the db
-    def create_user(self, user_data: dict) -> None:
+    def create_user(self, user_data: dict, embedding) -> None:
         id_user = len(self.db) + 1
 
         data = {
             "id" : id_user,
             "user_data" : user_data,
-            "embedding" : self.embedding
+            "embedding" : embedding
         }
         
+        # Falta agregar cómo se obtiene el embedding
         self.bd.append(data)
+        
+        for user in self.bd:
+            print(user)
 
 # Class of the reserves
 # class ReserveUser():
