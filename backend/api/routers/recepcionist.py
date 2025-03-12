@@ -12,9 +12,9 @@ from fastapi import HTTPException, status
 
 router = APIRouter(prefix = "/hotel")
 UPLOAD_FOLDER = 'api/images'
-
+os.makedirs(UPLOAD_FOLDER, exist_ok = True)
 # Instances to the users
-# database = db.DB()
+database = db.BD()
 # reception = db.ReserveUser()
 face_model = FaceRecognitionModel()
 
@@ -25,40 +25,40 @@ async def reserves():
                             detail = "There is not images")
     return {"path_images" : os.listdir("api/images/")}
 
-
 @router.post("/reservation")  
-async def create_reserve(data: Annotated[FormUserInput, Form()]):
+async def create_reserve(data: Annotated[FormUserInput, Form()], image : Annotated[UploadFile, File()]):
 
-    
     # Save the information and foto at the database
-
     try: 
-        # data = {
-        #     "fullname" : data.full_name,
-        #     "email" : data.email,
-        #     "phone" : data.phone,
-        #     "image" : data.image,
-        #     "arrival_time" : data.arrival_time,
-        #     "daparture_time" : data.daparture_time,
-        #     "num_guests" : data.num_guests,
-        #     "room_type" : data.room_type,
-        #     "pay_type" : data.pay_type
-        # }
+        image_bytes = await image.read()
+
+        # Take the data at the form
+        user_data = {
+            "fullname" : data.full_name,
+            "email" : data.email,
+            "phone" : data.phone,
+            "image" : image_bytes,
+            "arrival_time" : data.arrival_time,
+            "departure_time" : data.departure_time,
+            "num_guests" : data.num_guests,
+            "room_type" : data.room_type,
+            "pay_type" : data.pay_type
+        }
         
-        img = Image.open(BytesIO(data.img))
+        # Get embedding
+        img = Image.open(BytesIO(image_bytes))
         embedding = face_model.get_embeddings(img)
-        data["embedding"] = embedding
 
+        # Create to the user
+        database.create_user(user_data = user_data, embedding = embedding)
 
-
-        JSONResponse({"success_msg" : "user add successfully"}, 
+        JSONResponse({"success_msg" : "user added successfully"}, 
                 status_code = status.HTTP_200_OK)
-
-    except: 
+    except Exception as e: 
         raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST,
-                            detail = "It can't add new user")
-    # database.new_user_data(user_data)
+                            detail = f"Error {e}")
 
+# endpoint to detect to the user
 @router.post("/detect")
 async def confirm_reservation(image: UploadFile):
     # Validar imagen
@@ -90,3 +90,5 @@ async def confirm_reservation(image: UploadFile):
         return {"message": "Se encontraron coincidencias", "results": response_data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
