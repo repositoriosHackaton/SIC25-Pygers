@@ -1,7 +1,7 @@
 // import { SetFile } from "../types/State";
 // import Button from "./Button";
 // import SearchIcon from "../assets/icons/SearchIcon";
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 // interface Props {
@@ -162,7 +162,7 @@ const Images: React.FC<Props> = ({ files, setFiles }) => {
           onClick={handleUploadImages}
         >
           <SearchIcon color="white" />
-          Buscar sospechosos
+          <Link to="/Opciones">Buscar sospechosos</Link>
         </Button>
       </div>
     </>
