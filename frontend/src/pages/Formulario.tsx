@@ -34,8 +34,8 @@ import { Link } from "react-router-dom";
 
 export default function FormularioPrincipal(){
   return (
-    <div className="flex justify-center items-center min-h-screen bg-stone-950">
-      <form className="w-full max-w-xl p-9 bg-amber-950 text-white rounded shadow-md text-shadow-lg shadow-amber-950">
+    <div className="flex justify-center items-center min-h-screen bg-gray-800">
+      <form className="w-full max-w-xl p-9 bg-gray-500 text-white rounded shadow-md text-shadow-lg shadow-gray-500/50">
         <h2 className="text-4xl font-semibold mb-6 text-center">Formulario de Reserva</h2>
       <div id="contenido" className="justify-center  items-center columns-2 py-5">
 
@@ -101,7 +101,7 @@ export default function FormularioPrincipal(){
 
         <div className="mb-3">
           <label htmlFor="options" className="block text-amber-100">Tipo de Habitación:</label>
-          <select id="options" name="options" className="w-full px-5 py-2 border rounded border-white bg-amber-950 ">
+          <select id="options" name="options" className="w-full px-5 py-2 border rounded border-white bg-gray-500">
             <option value="individual">individual</option>
             <option value="doble">doble</option>
             <option value="triple">triple</option>
@@ -112,7 +112,7 @@ export default function FormularioPrincipal(){
 
         <div className="mb-3">
           <label htmlFor="reservationNumber" className="block text-amber-100">Metodo de Pago</label>
-          <select id="options" name="options" className="w-full px-5 py-2 border rounded border-white bg-amber-950 ">
+          <select id="options" name="options" className="w-full px-5 py-2 border rounded border-white bg-gray-500">
             <option value="visa">visa</option>
             <option value="mastercard">mastercard</option>
             <option value="paypal">paypal</option>

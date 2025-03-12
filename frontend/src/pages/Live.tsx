@@ -95,9 +95,9 @@ export default function WebcamComponent() {
 
   return (
     <>
-      <div className='min-h-screen bg-stone-950'>
+      <div className='min-h-screen bg-gray-800'>
           <Link to='/'>
-            <button className="w-48 text-white bg-amber-950 rounded shadow-lg shadow-amber-950/50 hover:bg-amber-700 hover:shadow-lg hover:shadow-amber-700/50 font-bold py-2 px-4 rounded text-center cursor-pointer transition duration-200 active:scale-90">Volver</button>
+            <button className="w-48 text-black bg-gray-500 rounded shadow-lg shadow-gray-500/50 hover:bg-neutral-800 hover:text-white hover:shadow-lg hover:shadow-neutral-800/50 font-bold py-2 px-4 rounded text-center cursor-pointer transition duration-200 active:scale-90">Atras</button>
           </Link>
         <h1 className="p-9 text-white text-4xl font-semibold mb-6 text-center">
           Visualización de la Cámara
@@ -115,7 +115,7 @@ export default function WebcamComponent() {
                 height: 720,
                 facingMode: 'user',
               }}
-              className="border-4 border-amber-950 rounded shadow-lg shadow-amber-950/50"
+              className="border-4 border-gray-500 rounded shadow-lg shadow-gray-500/50"
               onUserMedia={() => console.log('User media loaded')}
             />
             <div className="mt-4 flex justify-center space-x-4 m-5">

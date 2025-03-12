@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function PaginaDecisiones() {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-stone-950">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-800">
       <h1 className="text-4xl font-semibold mb-6 text-center text-white">Bienvenido a HotelPygers</h1>
       
       <div className="flex flex-col justify-center items-center mb-6">
