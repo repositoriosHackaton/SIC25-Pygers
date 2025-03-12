@@ -31,33 +31,34 @@ async def create_reserve(data: Annotated[FormUserInput, Form()]):
 
     
     # Save the information and foto at the database
-
     try: 
-        # data = {
-        #     "fullname" : data.full_name,
-        #     "email" : data.email,
-        #     "phone" : data.phone,
-        #     "image" : data.image,
-        #     "arrival_time" : data.arrival_time,
-        #     "daparture_time" : data.daparture_time,
-        #     "num_guests" : data.num_guests,
-        #     "room_type" : data.room_type,
-        #     "pay_type" : data.pay_type
-        # }
+
+        # Take the data at the form
+        data = {
+            "fullname" : data.full_name,
+            "email" : data.email,
+            "phone" : data.phone,
+            "image" : data.image,
+            "arrival_time" : data.arrival_time,
+            "daparture_time" : data.daparture_time,
+            "num_guests" : data.num_guests,
+            "room_type" : data.room_type,
+            "pay_type" : data.pay_type
+        }
         
         img = Image.open(BytesIO(data.img))
         embedding = face_model.get_embeddings(img)
         data["embedding"] = embedding
 
+        db.BD().create_user(data)
 
-
-        JSONResponse({"success_msg" : "user add successfully"}, 
+        JSONResponse({"success_msg" : "user added successfully"}, 
                 status_code = status.HTTP_200_OK)
+
 
     except: 
         raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST,
                             detail = "It can't add new user")
-    # database.new_user_data(user_data)
 
 @router.post("/detect")
 async def confirm_reservation(image: UploadFile):
@@ -90,3 +91,5 @@ async def confirm_reservation(image: UploadFile):
         return {"message": "Se encontraron coincidencias", "results": response_data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+

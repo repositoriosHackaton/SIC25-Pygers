@@ -52,7 +52,7 @@ class FaceRecognitionModel:
                 if distance <= self.umbral:
                     print(guest) 
                     return guest
-                   
+
 
 
     def pre_process_image(self, image: Image.Image) -> Image.Image:
