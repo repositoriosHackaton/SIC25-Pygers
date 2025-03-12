@@ -8,7 +8,7 @@ from scipy.spatial.distance import euclidean
 class FaceRecognitionModel:
     def __init__(self):
         self.known_face_embeddings: Dict[str, torch.Tensor] = {}
-        self.umbral: float = 0.36
+        self.umbral: float = 0.40
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         
         self.mtcnn = MTCNN(
